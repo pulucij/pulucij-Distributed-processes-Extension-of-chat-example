@@ -1,0 +1,70 @@
+﻿
+Voditi se "Prilog: upute za pokretanje programa" iz skripte. 
+
+Instalirala sam:
+https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Windows verzija)
+/* ovo vjerojano ne treba -> https://www.jetbrains.com/idea/ (editor) */
+
+/* https://medium.com/@andrii.bibik.dev/tutorial-on-how-to-install-java-some-basics-of-command-prompt-java-file-compilation-and-run-on-740bb00e6c90
+-> BITNO JE POSTAVITI PATH U ENVIRONMENT VARIABLES -> probati prvo bez jer sam ja možda prvo nešt krivo instalirala... */
+
+______________________________________________________________________________________________________________________________________________________
+
+Prvo sam kopirala dolje navedene programe iz distProg, tj. zip-a s web-a od DP
+Promijenila sam: u Symbols.java -> public static final String nameServer = "localhost"; 
+		 u Chat.java sve kaj je trebalo da se ispisuje na korisničko sučelje
+Sad se sve nalazi u mapi "Razrada studijskog primjera Chat".
+
+PRVO POKRETANJE: 
+- može se pokrenuti sve u mapi pomoću:	
+	> javac *.java
+
+- ili pokrećemo svako zasebno:
+ > javac Connector.java
+ > javac IntLinkedList.java
+ > javac Linker.java
+ > javac ListenerThread.java
+ > javac Msg.java
+ > javac MsgHandler.java
+ > javac Name.java
+ > javac NameServer.java
+ > javac NameTable.java
+ > javac PortAddr.java
+ > javac Process.java
+ > javac Symbols.java
+ > javac Topology.java
+ > javac Util.java
+ > javac CausalLinker.java
+ > javac Chat.java
+
+ZATIM POKREĆEMO NameServer (posebna cmd - ostaviti da radi):
+ > java NameServer
+
+NAKON TOGA POKREĆEMO SVE OSTALE PROCESE (svaki u posebnoj cmd - onoliko procesa koliko se stavi arg[3]-1):
+ > java Chat chat 0 3
+ > java Chat chat 1 3
+ > java Chat chat 2 3
+
+( Napomena: u originalnim programima bi još na kraju išlo causal/synch/simple, ali pošto mi samo causal implementiramo onda mišemo taj dio, VALJDA?? )
+
+
+TREBALE BI:
+- pokrenuti svaka nekoliko procesa i slati poruke tak da vidimo dal je stvarno kauzalna izmjena poruka (trebalo bi biti ok pošto sam kopirala samo originalni program za taj dio)
+	-tu možda probati sa sleep! (Probala sam stavit u hndlMessage prvo da spava (Util.mySleep(7000)), al to prije nego sam napravila RAMmutex pa se bolje vidi. Isprobavala sam samo
+	da prvo recimo pošalje P0 poruku P1 pa P1 pošalje P2 i onda pošaljem P0 u P2 i dođe ova prva poruka prije nego ova druga. Al to bi vjerojatno možda još bolje trebalo nekako vidit,
+	al i ja isto vjerujem da radi budući da je baš taj CausalLinker korišten.
+
+- ugraditi mehanizam međusobnog isključivanja koji će spriječiti da dva sudionika pišu poruku u isto vrijeme
+	-Ugradila sam RAMmutex tako da sam prvo stavila da Chat extends RAMmutex. To sam napravila jer nisam znala kaj točno u mainu kod ListenerThread poslati kao argument. Kod LockTestera se
+	šalje (MsgHandler)lock. Dakle, taj lock se smatra kao da je on taj proces koji se pokreće u tom mainu.
+	-probala sam i kao stvoriti samo lock=new RAMmutex(comm) i slati ga kao parametar kroz display i ove event handlere, ali to nije radilo, a i izgledalo mi je logično budući da taj lock
+	nisam odna slala kao parametar u ListenerThread nego samo Chat.
+
+	-ONO KAJ SAM PROMIJENILA I DODALA KOD OVOG extends_RAMmutex:
+		-u šučelju sam dodala na početku prvo gumb "Write Message" jer sam htjela nekako znat koji proces traži ulazak u kritičnu sekciju, a koji to ne traže pa mi je tako izgledalo
+		najjednostavnije. Kada proces stisne "WriteMessage" onda on traži ulazak u krit.sekciju, nakon tog ako ima pravo pojavljuju mu se polja za slanje poruke i gumb, a ako nema 
+		pravo, onda čeka i tek kad dobije pravo pojave mu se ta polja i gumb za slanje (sendMessage.setVisible(true)).
+		
+		-osim kaj sam stavila extends RAMmutex, u RAMmutex.java sam zakomentirala implementaciju handleMsg i skombinirala sam novu fju u Chat.java
+
+		-postavila sam requestCS i releaseCS u event handlerima za gumbe
