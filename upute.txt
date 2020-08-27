@@ -1,0 +1,53 @@
+
+Voditi se "Prilog: upute za pokretanje programa" iz skripte. 
+
+Instalirala sam:
+https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html (Windows verzija)
+/* ovo vjerojano ne treba -> https://www.jetbrains.com/idea/ (editor) */
+
+/* https://medium.com/@andrii.bibik.dev/tutorial-on-how-to-install-java-some-basics-of-command-prompt-java-file-compilation-and-run-on-740bb00e6c90
+-> BITNO JE POSTAVITI PATH U ENVIRONMENT VARIABLES -> probati prvo bez jer sam ja možda prvo nešt krivo instalirala... */
+
+______________________________________________________________________________________________________________________________________________________
+
+Prvo sam kopirala dolje navedene programe iz distProg, tj. zip-a s web-a od DP
+Promijenila sam: u Symbols.java -> public static final String nameServer = "localhost"; 
+		 u Chat.java sve kaj je trebalo da se ispisuje na korisničko sučelje
+Sad se sve nalazi u mapi "Razrada studijskog primjera Chat".
+
+PRVO POKRETANJE: 
+- može se pokrenuti sve u mapi pomoću:	
+	> javac *.java
+
+- ili pokrećemo svako zasebno:
+ > javac Connector.java
+ > javac IntLinkedList.java
+ > javac Linker.java
+ > javac ListenerThread.java
+ > javac Msg.java
+ > javac MsgHandler.java
+ > javac Name.java
+ > javac NameServer.java
+ > javac NameTable.java
+ > javac PortAddr.java
+ > javac Process.java
+ > javac Symbols.java
+ > javac Topology.java
+ > javac Util.java
+ > javac CausalLinker.java
+ > javac Chat.java
+
+ZATIM POKREĆEMO NameServer (posebna cmd - ostaviti da radi):
+ > java NameServer
+
+NAKON TOGA POKREĆEMO SVE OSTALE PROCESE (svaki u posebnoj cmd - onoliko procesa koliko se stavi arg[3]-1):
+ > java Chat chat 0 3
+ > java Chat chat 1 3
+ > java Chat chat 2 3
+
+( Napomena: u originalnim programima bi još na kraju išlo causal/synch/simple, ali pošto mi samo causal implementiramo onda mišemo taj dio, VALJDA?? )
+
+
+TREBALE BI:
+- pokrenuti svaka nekoliko procesa i slati poruke tak da vidimo dal je stvarno kauzalna izmjena poruka (trebalo bi biti ok pošto sam kopirala samo originalni program za taj dio)
+- ugraditi mehanizam međusobnog isključivanja koji će spriječiti da dva sudionika pišu poruku u isto vrijeme
