@@ -1,4 +1,4 @@
-DP-Chat
+# DP-Chat
 Project for subject Distributed Process at University of Zagreb, Department of Mathematics.
 
 Made by Lucija Puškarić and Maja Piskač.
